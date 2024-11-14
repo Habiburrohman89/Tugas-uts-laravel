@@ -2,107 +2,118 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Guru;
 use Illuminate\Http\Request;
-use App\Models\Siswa;
 use Illuminate\Support\Facades\Validator;
 
-class SiswaController extends Controller
+class GuruController extends Controller
 {
     public function index()
     {
-        $siswa = Siswa::all();
+        $guru = Guru::all();
 
-        return response()->json($siswa);
+        return response()->json($guru);
     }
 
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'nis'   => 'required|unique:siswas,nis',
+            'nip'   => 'required|unique:gurus,nip',
             'nama'  => 'required',
+            'mapel'  => 'required',
             'kelas' => 'required',
             'alamat' => 'required',
+            'nohp'  => 'required',
+
         ]);
 
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
 
-        $siswa = Siswa::create([
-            'nis'    => $request->nis,
+        $guru = Guru::create([
+            'nip'    => $request->nip,
             'nama'   => $request->nama,
+            'mapel'   => $request->mapel,
             'kelas'  => $request->kelas,
             'alamat' => $request->alamat,
+            'nohp'   => $request->nohp,
+
         ]);
 
-        //return response
         return response()->json([
             'success' => true,
-            'message' => 'Data Siswa Berhasil Ditambahkan!',
-            'data'    => $siswa
+            'message' => 'Data Guru Berhasil Ditambahkan!',
+            'data'    => $guru
         ], 201);
     }
     public function show($id)
     {
 
-        $siswa = Siswa::find($id);
+        $guru = Guru::find($id);
         return response()->json([
             'success' => true,
-            'message' => 'Detail Data Siswa!',
-            'data'    => $siswa
+            'message' => 'Detail Data Guru!',
+            'data'    => $guru
         ], 201);
     }
 
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'nis'     => 'required',
+            'nip'     => 'required|unique:gurus,nip,' . $id,
             'nama'    => 'required',
+            'mapel'    => 'required',
             'kelas'   => 'required',
             'alamat'  => 'required',
+            'nohp'    => 'required',
+
         ]);
 
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
 
-        $siswa = Siswa::find($id);
+        $guru = Guru::find($id);
 
-        if (!$siswa) {
-            return response()->json(['error' => 'Siswa not found'], 404);
+        if (!$guru) {
+            return response()->json(['error' => 'Guru not found'], 404);
         }
 
-        $siswa->nis = $request->nis;
-        $siswa->nama = $request->nama;
-        $siswa->kelas = $request->kelas;
-        $siswa->alamat = $request->alamat;
+        $guru->nis = $request->nip;
+        $guru->nama = $request->nama;
+        $guru->mapel = $request->mapel;
+        $guru->kelas = $request->kelas;
+        $guru->alamat = $request->alamat;
+        $guru->nohp = $request->nohp;
 
 
-        $siswa->save();
+
+        $guru->save();
 
         return response()->json([
             'success' => true,
-            'message' => 'Data Siswa Berhasil Diubah!',
-            'data'    => $siswa
+            'message' => 'Data Guru Berhasil Diubah!',
+            'data'    => $guru
         ], 200);
     }
     public function destroy($id)
     {
-        $siswa = Siswa::find($id);
+        $guru = Guru::find($id);
 
-        if (!$siswa) {
+        if (!$guru) {
             return response()->json([
                 'success' => false,
-                'message' => 'Siswa tidak ditemukan!'
+                'message' => 'Guru tidak ditemukan!'
             ], 404);
         }
 
-        $siswa->delete();
+        $guru->delete();
 
         return response()->json([
             'success' => true,
-            'message' => 'Data Siswa Berhasil Dihapus!',
-            'data'    => $siswa
+            'message' => 'Data Guru Berhasil Dihapus!',
+            'data'    => $guru
         ], 200);
     }
 }
